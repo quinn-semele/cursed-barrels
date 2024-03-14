@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=top,open=false,facing=up": {
+      "model": "cursed-barrels:block/barrel_top"
+    },
+    "type=top,open=true,facing=up": {
+      "model": "cursed-barrels:block/barrel_top_open"
+    },
+    "type=bottom,facing=up": {
+      "model": "cursed-barrels:block/barrel_bottom"
+    }
+  }
+}
