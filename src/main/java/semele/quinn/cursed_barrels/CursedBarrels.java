@@ -21,13 +21,23 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import semele.quinn.cursed_barrels.block.CursedBarrelBlock;
+import semele.quinn.cursed_barrels.block.CursedBarrelBlockEntity;
 
 public class CursedBarrels implements ModInitializer {
-	public static final CursedBarrelBlock BLOCK = new CursedBarrelBlock();
+    public static final CursedBarrelBlock BLOCK = new CursedBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL));
+    public static final BlockEntityType<CursedBarrelBlockEntity> BLOCK_ENTITY_TYPE = BlockEntityType.Builder.of(
+                    (pos, state) -> new CursedBarrelBlockEntity(CursedBarrels.BLOCK_ENTITY_TYPE, pos, state))
+            .build(null);
 
-	@Override
-	public void onInitialize() {
-        Registry.register(BuiltInRegistries.BLOCK, new ResourceLocation("cursed-barrels", "barrel"), BLOCK);
-	}
+    @Override
+    public void onInitialize() {
+        ResourceLocation barrelId = new ResourceLocation("cursed-barrels", "barrel");
+
+        Registry.register(BuiltInRegistries.BLOCK, barrelId, BLOCK);
+        Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, barrelId, BLOCK_ENTITY_TYPE);
+    }
 }
