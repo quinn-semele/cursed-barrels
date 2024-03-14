@@ -1,13 +1,84 @@
 {
   "variants": {
-    "type=top,open=false,facing=up": {
+    "type=top,facing=up,open=false": {
       "model": "cursed-barrels:block/barrel_top"
     },
-    "type=top,open=true,facing=up": {
+    "type=top,facing=down,open=false": {
+      "model": "cursed-barrels:block/barrel_top",
+      "x": 180
+    },
+    "type=top,facing=north,open=false": {
+      "model": "cursed-barrels:block/barrel_top",
+      "x": 90
+    },
+    "type=top,facing=south,open=false": {
+      "model": "cursed-barrels:block/barrel_top",
+      "x": 90,
+      "y": 180
+    },
+    "type=top,facing=east,open=false": {
+      "model": "cursed-barrels:block/barrel_top",
+      "x": 90,
+      "y": 90
+    },
+    "type=top,facing=west,open=false": {
+      "model": "cursed-barrels:block/barrel_top",
+      "x": 90,
+      "y": 270
+    },
+
+    "type=top,facing=up,open=true": {
       "model": "cursed-barrels:block/barrel_top_open"
     },
+    "type=top,facing=down,open=true": {
+      "model": "cursed-barrels:block/barrel_top_open",
+      "x": 180
+    },
+    "type=top,facing=north,open=true": {
+      "model": "cursed-barrels:block/barrel_top_open",
+      "x": 90
+    },
+    "type=top,facing=south,open=true": {
+      "model": "cursed-barrels:block/barrel_top_open",
+      "x": 90,
+      "y": 180
+    },
+    "type=top,facing=east,open=true": {
+      "model": "cursed-barrels:block/barrel_top_open",
+      "x": 90,
+      "y": 90
+    },
+    "type=top,facing=west,open=true": {
+      "model": "cursed-barrels:block/barrel_top_open",
+      "x": 90,
+      "y": 270
+    },
+
     "type=bottom,facing=up": {
       "model": "cursed-barrels:block/barrel_bottom"
+    },
+    "type=bottom,facing=down": {
+      "model": "cursed-barrels:block/barrel_bottom",
+      "x": 180
+    },
+    "type=bottom,facing=north": {
+      "model": "cursed-barrels:block/barrel_bottom",
+      "x": 90
+    },
+    "type=bottom,facing=south": {
+      "model": "cursed-barrels:block/barrel_bottom",
+      "x": 90,
+      "y": 180
+    },
+    "type=bottom,facing=east": {
+      "model": "cursed-barrels:block/barrel_bottom",
+      "x": 90,
+      "y": 90
+    },
+    "type=bottom,facing=west": {
+      "model": "cursed-barrels:block/barrel_bottom",
+      "x": 90,
+      "y": 270
     }
   }
 }
