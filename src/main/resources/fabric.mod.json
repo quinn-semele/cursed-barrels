@@ -15,20 +15,10 @@
 	"entrypoints": {
 		"main": [
 			"semele.quinn.cursed_barrels.CursedBarrels"
-		],
-		"client": [
-			"semele.quinn.cursed_barrels.CursedBarrelsClient"
-		],
-		"fabric-datagen": [
-			"semele.quinn.cursed_barrels.CursedBarrelsDataGenerator"
 		]
 	},
 	"mixins": [
-		"cursed-barrels.mixins.json",
-		{
-			"config": "cursed-barrels.client.mixins.json",
-			"environment": "client"
-		}
+		"cursed-barrels.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.7",
