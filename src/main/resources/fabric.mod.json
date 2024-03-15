@@ -20,6 +20,7 @@
 	"mixins": [
 		"cursed-barrels.mixins.json"
 	],
+	"accessWidener": "cursed-barrels.accessWidener",
 	"depends": {
 		"fabricloader": ">=0.15.7",
 		"minecraft": "~1.20.4",

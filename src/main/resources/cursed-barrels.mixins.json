@@ -1,11 +1,13 @@
 {
-	"required": true,
-	"package": "semele.quinn.cursed_barrels.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"mixins": [
-		"ModifyBarrelPlacementLogic"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "semele.quinn.cursed_barrels.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "DontDropBarrelContents",
+    "ModifyBarrelPlacementLogic",
+    "PreserveBarrelInventory"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }

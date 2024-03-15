@@ -22,9 +22,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -40,6 +43,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import semele.quinn.cursed_barrels.BarrelType;
+import semele.quinn.cursed_barrels.CursedBarrelAccessor;
 import semele.quinn.cursed_barrels.CursedBarrels;
 
 import java.util.List;
@@ -47,9 +51,9 @@ import java.util.List;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.OPEN;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
-public class CursedBarrelBlock extends BaseEntityBlock {
+public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContainerHolder {
     public static final MapCodec<CursedBarrelBlock> CODEC = simpleCodec(CursedBarrelBlock::new);
-    private static final EnumProperty<BarrelType> TYPE = EnumProperty.create("type", BarrelType.class);
+    public static final EnumProperty<BarrelType> TYPE = EnumProperty.create("type", BarrelType.class);
 
     public CursedBarrelBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -115,8 +119,16 @@ public class CursedBarrelBlock extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        if (level.getBlockEntity(pos) instanceof CursedBarrelBlockEntity entity) {
-            player.openMenu(entity);
+        CursedBarrelAccessor accessor = CursedBarrelAccessor.getAccessor(level, pos);
+
+        if (accessor == null) {
+            return InteractionResult.CONSUME;
+        }
+
+        if (player.isSecondaryUseActive() && hit.getDirection() == state.getValue(FACING) && state.getValue(TYPE) == BarrelType.TOP) {
+            accessor.toggleForceOpen();
+        } else {
+            player.openMenu(accessor.getMenu());
             player.awardStat(Stats.OPEN_BARREL);
             PiglinAi.angerNearbyPiglins(player, true);
         }
@@ -127,7 +139,12 @@ public class CursedBarrelBlock extends BaseEntityBlock {
     @Override
     @SuppressWarnings("deprecation")
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moved) {
-        Containers.dropContentsOnDestroy(state, newState, level, pos);
+        if (newState.getBlock() != this && newState.getBlock() != Blocks.BARREL) {
+            if (level.getBlockEntity(pos) instanceof Container container) {
+                Containers.dropContents(level, pos, container);
+                level.updateNeighbourForOutputSignal(pos, state.getBlock());
+            }
+        }
 
         super.onRemove(state, level, pos, newState, moved);
     }
@@ -135,10 +152,38 @@ public class CursedBarrelBlock extends BaseEntityBlock {
     @SuppressWarnings("deprecation")
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (level.getBlockEntity(pos) instanceof CursedBarrelBlockEntity entity) {
-            if (!entity.isForcedOpen()) {
-                entity.recheckOpenCount();
-            }
+            entity.recheckOpenCount();
         }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean hasAnalogOutputSignal(BlockState blockState) {
+        return true;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        CursedBarrelAccessor accessor = CursedBarrelAccessor.getAccessor(level, pos);
+
+        if (accessor != null) {
+            return accessor.getAnalogOutputSignal();
+        }
+
+        return 0;
+    }
+
+    @Override
+    @SuppressWarnings("NullableProblems")
+    public WorldlyContainer getContainer(BlockState state, LevelAccessor level, BlockPos pos) {
+        CursedBarrelAccessor accessor = CursedBarrelAccessor.getAccessor(level, pos);
+
+        if (accessor != null) {
+            return accessor.getInventory();
+        }
+
+        return null;
     }
 
     public static BlockState getPlacementState(BlockPlaceContext context) {

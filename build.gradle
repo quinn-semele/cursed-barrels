@@ -21,6 +21,7 @@ loom {
 		}
 	}
 
+	accessWidenerPath = file("src/main/resources/cursed-barrels.accessWidener")
 }
 
 dependencies {
