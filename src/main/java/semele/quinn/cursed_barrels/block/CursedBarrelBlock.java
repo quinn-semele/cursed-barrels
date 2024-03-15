@@ -31,6 +31,7 @@ import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
@@ -40,6 +41,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import semele.quinn.cursed_barrels.BarrelType;
@@ -52,6 +57,14 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
 public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContainerHolder {
+    private static final VoxelShape TOP_INSIDE = Block.box(2.0, 0.0, 2.0, 14.0, 16.0, 14.0);
+    private static final VoxelShape BOTTOM_UP_INSIDE = Block.box(2.0, 2.0, 2.0, 14.0, 16.0, 14.0);
+    private static final VoxelShape BOTTOM_DOWN_INSIDE = Block.box(2.0, 0.0, 2.0, 14.0, 14.0, 14.0);
+    private static final VoxelShape TOP_UP_SHAPE = Shapes.join(Shapes.block(), TOP_INSIDE, BooleanOp.ONLY_FIRST);
+    private static final VoxelShape BOTTOM_UP_SHAPE = Shapes.join(Shapes.block(), BOTTOM_UP_INSIDE, BooleanOp.ONLY_FIRST);
+    private static final VoxelShape BOTTOM_DOWN_SHAPE = Shapes.join(Shapes.block(), BOTTOM_DOWN_INSIDE, BooleanOp.ONLY_FIRST);
+    private static final VoxelShape TOP_DOWN_SHAPE = TOP_UP_SHAPE;
+
     public static final MapCodec<CursedBarrelBlock> CODEC = simpleCodec(CursedBarrelBlock::new);
     public static final EnumProperty<BarrelType> TYPE = EnumProperty.create("type", BarrelType.class);
 
@@ -69,6 +82,41 @@ public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContain
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(TYPE, OPEN, FACING);
+    }
+
+    @NotNull
+    @Override
+    @SuppressWarnings("deprecation")
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Shapes.block();
+    }
+
+    @NotNull
+    @Override
+    @SuppressWarnings("deprecation")
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (!state.getValue(OPEN)) {
+            return Shapes.block();
+        }
+
+        Direction facing = state.getValue(FACING);
+        BarrelType type = state.getValue(TYPE);
+
+        if (facing == Direction.UP) {
+            if (type == BarrelType.TOP) {
+                return TOP_UP_SHAPE;
+            } else {
+                return BOTTOM_UP_SHAPE;
+            }
+        } else if (facing == Direction.DOWN) {
+            if (type == BarrelType.TOP) {
+                return TOP_DOWN_SHAPE;
+            } else {
+                return BOTTOM_DOWN_SHAPE;
+            }
+        }
+
+        return Shapes.block();
     }
 
     @NotNull
