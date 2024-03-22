@@ -30,10 +30,12 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -77,6 +79,12 @@ public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContain
                         .setValue(FACING, Direction.UP)
                         .setValue(OPEN, false)
         );
+    }
+
+    @NotNull
+    @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        return Blocks.BARREL.asItem().getDefaultInstance();
     }
 
     @Override
@@ -135,7 +143,7 @@ public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContain
         Direction offset = type.asOffset(state.getValue(FACING));
 
         if (!isValidCursedBarrel(state, level.getBlockState(pos.relative(offset)))) {
-            return Blocks.BARREL.defaultBlockState().setValue(FACING, facing).setValue(OPEN, state.getValue(OPEN));
+            return Blocks.BARREL.defaultBlockState().setValue(FACING, facing).setValue(OPEN, false);
         }
 
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
