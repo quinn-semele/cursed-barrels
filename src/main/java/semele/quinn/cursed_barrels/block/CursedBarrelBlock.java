@@ -16,7 +16,6 @@
 
 package semele.quinn.cursed_barrels.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -35,7 +34,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -67,7 +65,6 @@ public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContain
     private static final VoxelShape BOTTOM_DOWN_SHAPE = Shapes.join(Shapes.block(), BOTTOM_DOWN_INSIDE, BooleanOp.ONLY_FIRST);
     private static final VoxelShape TOP_DOWN_SHAPE = TOP_UP_SHAPE;
 
-    public static final MapCodec<CursedBarrelBlock> CODEC = simpleCodec(CursedBarrelBlock::new);
     public static final EnumProperty<BarrelType> TYPE = EnumProperty.create("type", BarrelType.class);
 
     public CursedBarrelBlock(BlockBehaviour.Properties properties) {
@@ -83,7 +80,7 @@ public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContain
 
     @NotNull
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         return Blocks.BARREL.asItem().getDefaultInstance();
     }
 
@@ -147,12 +144,6 @@ public class CursedBarrelBlock extends BaseEntityBlock implements WorldlyContain
         }
 
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-    }
-
-    @NotNull
-    @Override
-    protected MapCodec<CursedBarrelBlock> codec() {
-        return CODEC;
     }
 
     @Nullable

@@ -28,7 +28,7 @@ import semele.quinn.cursed_barrels.block.CursedBarrelBlock;
 import semele.quinn.cursed_barrels.block.CursedBarrelBlockEntity;
 
 public class CursedBarrels implements ModInitializer {
-    public static final CursedBarrelBlock BLOCK = new CursedBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL));
+    public static final CursedBarrelBlock BLOCK = new CursedBarrelBlock(BlockBehaviour.Properties.copy(Blocks.BARREL));
     public static final BlockEntityType<CursedBarrelBlockEntity> BLOCK_ENTITY_TYPE = BlockEntityType.Builder.of(
                     (pos, state) -> new CursedBarrelBlockEntity(CursedBarrels.BLOCK_ENTITY_TYPE, pos, state))
             .build(null);
